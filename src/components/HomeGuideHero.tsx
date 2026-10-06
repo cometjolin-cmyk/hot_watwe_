@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PersonaFilter } from './HeroSection';
-import { ArrowRight, Map, Grid, Layers, BookOpen, Compass, Sparkles, Check } from 'lucide-react';
+import { ArrowRight, Map, Compass, Sparkles, Droplets, Waves, Eye } from 'lucide-react';
 
 interface HomeGuideHeroProps {
   activePersona: PersonaFilter;
@@ -12,6 +12,31 @@ interface HomeGuideHeroProps {
   onScrollToFeatured: () => void;
 }
 
+// 3 Curated onsen photography views for seamless exploration
+const HERO_SCENES = [
+  {
+    id: 'stone-tub',
+    title: '靜謐石池 ‧ 山嵐竹影',
+    sub: '天然碳酸氫鈉泉 ‧ 水溫 58°C 美人湯',
+    tag: '露天自然石池',
+    url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 'sky-pool',
+    title: '高空無邊際 ‧ 溫泉景觀泳池',
+    sub: '俯瞰蘭陽平原與龜山島曙光',
+    tag: '無邊際景觀水療',
+    url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 'granite-bath',
+    title: '客房獨立私湯 ‧ 極致隱私',
+    sub: '深黑花崗岩溫泉池 ‧ 原木暖色微光',
+    tag: '客房私湯規格',
+    url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80',
+  },
+];
+
 export const HomeGuideHero: React.FC<HomeGuideHeroProps> = ({
   activePersona,
   onSelectPersona,
@@ -21,6 +46,36 @@ export const HomeGuideHero: React.FC<HomeGuideHeroProps> = ({
   onOpenGuide,
   onScrollToFeatured,
 }) => {
+  // Active photo scene
+  const [activeSceneIdx, setActiveSceneIdx] = useState(0);
+
+  // Mouse tilt & interactive spotlight states
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    setMousePos({ x, y });
+
+    // Smooth subtle 3D tilt (range: -8deg to +8deg)
+    setTilt({
+      rotateX: (0.5 - y) * 12,
+      rotateY: (x - 0.5) * 12,
+    });
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ rotateX: 0, rotateY: 0 });
+    setIsHovered(false);
+    setMousePos({ x: 0.5, y: 0.5 });
+  };
+
+  const currentScene = HERO_SCENES[activeSceneIdx];
+
   const steps = [
     {
       num: '01',
@@ -57,13 +112,13 @@ export const HomeGuideHero: React.FC<HomeGuideHeroProps> = ({
 
   return (
     <section className="relative pt-6 pb-12 px-4 sm:px-6 max-w-7xl mx-auto">
-      {/* 1. Main Hero: Clean Split Layout with Serene Photography */}
+      {/* 1. Main Hero: Clean Split Layout with Seamless Interactive Photography */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12">
         {/* Left Column: Minimal Typography & Intentional Whitespace */}
         <div className="lg:col-span-7 space-y-5 text-left">
           {/* Subtle Calligraphic Kicker */}
           <div className="inline-flex items-center gap-2 text-xs text-[#2D6A50] font-medium tracking-widest uppercase">
-            <span className="w-2 h-2 rounded-full bg-[#2D6A50]" />
+            <span className="w-2 h-2 rounded-full bg-[#2D6A50] animate-pulse" />
             <span>JIAOXI ONSEN CURATION ‧ 礁溪水墨溫泉評鑑</span>
           </div>
 
@@ -128,31 +183,103 @@ export const HomeGuideHero: React.FC<HomeGuideHeroProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Serene Atmospheric Hot Spring Visual */}
-        <div className="lg:col-span-5 relative">
-          <div className="relative rounded-3xl overflow-hidden aspect-4/3 sm:aspect-5/4 shadow-xl border border-[#D2DED5] bg-stone-900 group">
-            <img
-              src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80"
-              alt="礁溪頂級溫泉私湯實景"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            {/* Subtle Gradient Wash */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#112019]/90 via-[#112019]/30 to-transparent" />
+        {/* Right Column: Seamless Cover Photo with 3D Mouse Parallax & Soft Ink-Wash Blending */}
+        <div className="lg:col-span-5 relative select-none">
+          {/* Subtle Ambient Background Glow behind the card */}
+          <div
+            className="absolute -inset-4 rounded-3xl bg-radial from-[#2D6A50]/20 via-[#1F4A38]/5 to-transparent blur-xl pointer-events-none transition-opacity duration-500"
+            style={{ opacity: isHovered ? 1 : 0.6 }}
+          />
 
-            {/* In-Photo Badge Overlay */}
-            <div className="absolute bottom-5 left-5 right-5 text-white">
+          {/* 3D Tilt Interactive Image Card */}
+          <div
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              transform: `perspective(1000px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale3d(${
+                isHovered ? 1.02 : 1
+              }, ${isHovered ? 1.02 : 1}, 1)`,
+              transition: 'transform 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+            className="relative rounded-3xl overflow-hidden aspect-4/3 sm:aspect-5/4 shadow-2xl border border-[#D2DED5]/90 bg-[#0E1A14] group cursor-crosshair"
+          >
+            {/* Real High-Resolution Photograph */}
+            <img
+              src={currentScene.url}
+              alt={currentScene.title}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+
+            {/* Seamless Aesthetic Edge Vignette & Rice-Paper Blend */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#112019]/95 via-[#112019]/30 to-transparent" />
+            <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-3xl shadow-inner" />
+
+            {/* Interactive Mouse-following Specular Water-light Sheen */}
+            <div
+              className="absolute inset-0 pointer-events-none transition-opacity duration-200"
+              style={{
+                opacity: isHovered ? 0.35 : 0,
+                background: `radial-gradient(500px circle at ${mousePos.x * 100}% ${
+                  mousePos.y * 100
+                }%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 75%)`,
+              }}
+            />
+
+            {/* Top Interactive Indicator Badge */}
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/55 backdrop-blur-md text-emerald-200 text-xs font-semibold border border-white/20 shadow-md">
+                <Sparkles className="w-3.5 h-3.5 text-[#C59B3F]" />
+                <span>{currentScene.tag}</span>
+              </span>
+              {isHovered && (
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#1F4A38]/80 backdrop-blur-md text-white text-[10px] animate-in fade-in">
+                  <span>♨ 3D 光影連動中</span>
+                </span>
+              )}
+            </div>
+
+            {/* Bottom In-Photo Content with Parallax Depth */}
+            <div
+              className="absolute bottom-4 left-4 right-4 text-white z-20 transition-transform duration-200"
+              style={{
+                transform: `translate(${(mousePos.x - 0.5) * 10}px, ${(mousePos.y - 0.5) * 8}px)`,
+              }}
+            >
               <div className="flex items-center gap-2 text-xs text-emerald-300 font-medium mb-1">
                 <span>♨ 天然碳酸氫鈉泉</span>
                 <span>·</span>
                 <span>水溫 58°C 美人湯</span>
               </div>
-              <h3 className="font-serif-tc font-bold text-lg sm:text-xl text-stone-100">
-                靜謐石池 ‧ 山嵐竹影
+              <h3 className="font-serif-tc font-bold text-lg sm:text-xl text-stone-100 drop-shadow-md">
+                {currentScene.title}
               </h3>
-              <p className="text-xs text-stone-300 mt-0.5">
-                全館客房獨立私湯、男女裸湯與無邊際景觀水療
+              <p className="text-xs text-stone-300 mt-0.5 drop-shadow-sm">
+                {currentScene.sub}
               </p>
+            </div>
+          </div>
+
+          {/* Micro Scene Switcher Tabs (3 Authentic Onsen Perspectives) */}
+          <div className="mt-3.5 flex items-center justify-between gap-1.5 bg-white/80 backdrop-blur-xs p-1.5 rounded-2xl border border-[#D2DED5] shadow-xs">
+            <span className="text-[11px] font-semibold text-[#41574C] pl-2 flex items-center gap-1 font-serif-tc shrink-0">
+              <Eye className="w-3.5 h-3.5 text-[#2D6A50]" />
+              <span>實景視角：</span>
+            </span>
+            <div className="flex items-center gap-1 overflow-x-auto">
+              {HERO_SCENES.map((sc, idx) => (
+                <button
+                  key={sc.id}
+                  onClick={() => setActiveSceneIdx(idx)}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                    activeSceneIdx === idx
+                      ? 'bg-[#1F4A38] text-white shadow-xs font-semibold'
+                      : 'text-[#41574C] hover:text-[#112019] hover:bg-[#EAF1EC]'
+                  }`}
+                >
+                  {sc.tag}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -173,7 +300,7 @@ export const HomeGuideHero: React.FC<HomeGuideHeroProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {steps.map((st, i) => (
+          {steps.map((st) => (
             <div
               key={st.num}
               onClick={st.onClick}

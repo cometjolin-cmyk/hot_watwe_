@@ -31,16 +31,16 @@ export const RatingTooltip: React.FC<RatingTooltipProps> = ({ hotel }) => {
       {/* Floating Micro-interaction Tooltip in Ink-Green aesthetic */}
       {isHovered && (
         <div className="absolute bottom-full left-0 mb-2 z-50 pointer-events-none animate-in fade-in zoom-in-95 duration-200">
-          <div className="w-64 bg-[#14241C] text-white rounded-xl p-3 shadow-2xl border border-[#234235] backdrop-blur-md">
-            {/* Header: 熱門好評 */}
+          <div className="w-64 bg-[#112019]/95 text-white rounded-xl p-3 shadow-2xl border border-[#2D6A50] backdrop-blur-md">
+            {/* Header: 『熱門好評』 */}
             <div className="flex items-center justify-between mb-1.5">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#1F4A38] text-emerald-200 text-[10px] font-bold tracking-wide border border-[#2D6A50]/50">
-                <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-                {hotel.reviewPraise?.badge || '熱門好評'}
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#1F4A38] text-emerald-200 text-[10px] font-bold tracking-wide border border-[#2D6A50]">
+                <Sparkles className="w-3 h-3 text-[#C59B3F]" />
+                <span>『熱門好評』</span>
               </span>
-              <span className="text-[#D4AF37] font-num text-xs font-bold flex items-center gap-0.5">
-                <ThumbsUp className="w-3 h-3 text-[#D4AF37]" />
-                {hotel.reviewPraise?.scoreText || '98% 住客極致推薦'}
+              <span className="text-[#C59B3F] font-num text-xs font-bold flex items-center gap-1">
+                <ThumbsUp className="w-3 h-3 text-[#C59B3F]" />
+                <span>{hotel.reviewPraise?.scoreText || '98% 極致推薦'}</span>
               </span>
             </div>
 
@@ -50,7 +50,7 @@ export const RatingTooltip: React.FC<RatingTooltipProps> = ({ hotel }) => {
             </p>
 
             {/* Downward Pointer Arrow */}
-            <div className="absolute top-full left-5 -mt-1 w-2.5 h-2.5 bg-[#14241C] rotate-45 border-r border-b border-[#234235]" />
+            <div className="absolute top-full left-5 -mt-1 w-2.5 h-2.5 bg-[#112019] rotate-45 border-r border-b border-[#2D6A50]" />
           </div>
         </div>
       )}

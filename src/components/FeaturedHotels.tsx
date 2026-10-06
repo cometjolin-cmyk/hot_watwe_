@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Hotel } from '../data/hotels';
 import { HotelVisual } from './HotelVisual';
-import { RatingTooltip } from './RatingTooltip';
-import { Heart, Check, Info, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Check, Info, Sparkles, ChevronLeft, ChevronRight, Star, ThumbsUp } from 'lucide-react';
 
 interface FeaturedHotelsProps {
   hotels: Hotel[];
@@ -24,6 +23,7 @@ export const FeaturedHotels: React.FC<FeaturedHotelsProps> = ({
   onBookHotel,
 }) => {
   const [activePhotoIdx, setActivePhotoIdx] = useState<{ [hotelId: string]: number }>({});
+  const [hoveredRatingHotelId, setHoveredRatingHotelId] = useState<string | null>(null);
 
   const handleNextPhoto = (e: React.MouseEvent, hotel: Hotel) => {
     e.stopPropagation();
@@ -144,10 +144,56 @@ export const FeaturedHotels: React.FC<FeaturedHotelsProps> = ({
               {/* Card Content Area */}
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  {/* Rating & Review Count with interactive RatingTooltip */}
+                  {/* Rating & Review Count with interactive Rating block */}
                   <div className="flex items-center justify-between text-xs mb-2">
-                    <RatingTooltip hotel={hotel} />
-                    <span className="text-[11px] font-medium text-[#55685E] bg-[#EAF1EC] px-2 py-0.5 rounded-md border border-[#D5E0D8]">
+                    <div
+                      className="relative inline-flex items-center cursor-pointer select-none py-0.5"
+                      onMouseEnter={() => setHoveredRatingHotelId(hotel.id)}
+                      onMouseLeave={() => setHoveredRatingHotelId(null)}
+                      tabIndex={0}
+                      role="tooltip"
+                    >
+                      <div className="flex items-center gap-1.5 transition-all hover:opacity-90">
+                        <div className="flex items-center text-[#C59B3F] font-bold">
+                          <Star className="w-3.5 h-3.5 fill-[#C59B3F] mr-0.5 transition-transform duration-200 hover:scale-125" />
+                          <span className="font-num text-sm text-[#112019] font-bold">
+                            {hotel.rating.toFixed(1)}
+                          </span>
+                        </div>
+                        <span className="text-[#41574C] font-num text-xs">
+                          ({hotel.reviewCount} 則評價)
+                        </span>
+                      </div>
+
+                      {/* Floating Micro-interaction Tooltip: 『熱門好評』 */}
+                      {hoveredRatingHotelId === hotel.id && (
+                        <div className="absolute bottom-full left-0 mb-2.5 z-50 pointer-events-none animate-in fade-in zoom-in-95 duration-200">
+                          <div className="w-64 bg-[#112019]/95 text-stone-100 rounded-xl p-3 shadow-2xl border border-[#2D6A50] backdrop-blur-md">
+                            {/* Header with 『熱門好評』 badge */}
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#1F4A38] text-emerald-200 text-[10px] font-bold tracking-wide border border-[#2D6A50]">
+                                <Sparkles className="w-3 h-3 text-[#C59B3F]" />
+                                <span>『熱門好評』</span>
+                              </span>
+                              <span className="text-[#C59B3F] font-num text-xs font-bold flex items-center gap-1">
+                                <ThumbsUp className="w-3 h-3 text-[#C59B3F]" />
+                                <span>{hotel.reviewPraise?.scoreText || '98% 極致推薦'}</span>
+                              </span>
+                            </div>
+
+                            {/* Praise Highlight */}
+                            <p className="text-[11px] text-stone-300 leading-snug">
+                              {hotel.reviewPraise?.tag || hotel.specs.reputation}
+                            </p>
+
+                            {/* Downward Pointer Arrow */}
+                            <div className="absolute top-full left-5 -mt-1 w-2.5 h-2.5 bg-[#112019] rotate-45 border-r border-b border-[#2D6A50]" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <span className="text-[11px] font-medium text-[#41574C] bg-[#EAF1EC] px-2 py-0.5 rounded-md border border-[#D2DED5]">
                       {'★'.repeat(hotel.starLevel)} 星級指標
                     </span>
                   </div>
