@@ -1,0 +1,6 @@
+{
+  "name": "礁溪 10 大溫泉評鑑與導購平台",
+  "description": "尋訪美人湯的極致溫度：礁溪 10 大頂級溫泉飯店嚴選評鑑，日系暖木溫泉風，一鍵比價、私湯規格橫向對比與直達預訂。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
